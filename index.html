@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Better Me">
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><rect width='180' height='180' rx='40' fill='%23F5F3EF' stroke='%231B1B1B' stroke-width='3'/><text x='90' y='122' font-family='Georgia,serif' font-size='78' font-weight='400' fill='%231B1B1B' text-anchor='middle' letter-spacing='-2'>BS</text></svg>">
+    <link rel="icon" sizes="192x192" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='192' height='192'><rect width='192' height='192' rx='42' fill='%23F5F3EF' stroke='%231B1B1B' stroke-width='3'/><text x='96' y='130' font-family='Georgia,serif' font-size='84' font-weight='400' fill='%231B1B1B' text-anchor='middle' letter-spacing='-2'>BS</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><rect width='32' height='32' rx='8' fill='%23F5F3EF' stroke='%231B1B1B' stroke-width='2'/><text x='16' y='23' font-family='Georgia,serif' font-size='16' font-weight='400' fill='%231B1B1B' text-anchor='middle'>BS</text></svg>">
+    <title>Better Me</title>
+    <style>
+        :root {
+            --bg: #FAFAF8;
+            --card: #FFFFFF;
+            --text: #37352F;
+            --text-light: #9B9A97;
+            --text-muted: #C1C0BD;
+            --border: #EDECE9;
+            --gold: #C9B99A;
+            --win: #4A7C59;
+            --lose: #B06A6A;
+            --radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display', 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom) 16px;
+            display: flex;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
+            letter-spacing: -0.2px;
+        }
+
+        input, textarea {
+            -webkit-user-select: text !important;
+            user-select: text !important;
+            -webkit-touch-callout: default !important;
+        }
+
+        .app {
+            max-width: 400px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* Header */
+        .header {
+            padding: 10px 0 2px;
+            text-align: center;
+        }
+        .header .title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: -0.4px;
+        }
+        .header .subtitle {
+            font-size: 11px;
+            color: var(--text-light);
+            letter-spacing: 0.3px;
+        }
+
+        /* ── WIN/IMPULSE GAME ── */
+        .game-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 14px 16px;
+        }
+        .game-score-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .game-score {
+            flex: 1;
+            text-align: center;
+            padding: 10px 8px;
+            border-radius: 6px;
+            background: #FAFAF8;
+            border: 1px solid var(--border);
+        }
+        .game-score.win-score {
+            background: #F6F9F7;
+            border-color: #D5E5DC;
+        }
+        .game-score.lose-score {
+            background: #FBF7F7;
+            border-color: #E8D5D5;
+        }
+        .game-score .g-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-light);
+        }
+        .game-score .g-val {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+        .win-score .g-val {
+            color: var(--win);
+        }
+        .lose-score .g-val {
+            color: var(--lose);
+        }
+        .game-progress {
+            height: 4px;
+            background: #EDECE9;
+            border-radius: 2px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            display: flex;
+        }
+        .game-progress .win-fill {
+            background: var(--gold);
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+        .game-progress .lose-fill {
+            background: #E8D5D5;
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+        }
+        .game-input-row {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        .game-input-row input {
+            flex: 1;
+            padding: 8px 10px;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            font-size: 12px;
+            background: #FAFAF8;
+            color: var(--text);
+            outline: none;
+            font-family: inherit;
+        }
+        .game-input-row input:focus {
+            border-color: var(--gold);
+        }
+        .game-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .game-btn {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: center;
+            font-family: inherit;
+            letter-spacing: -0.1px;
+            background: var(--card);
+            color: var(--text);
+        }
+        .game-btn:active {
+            transform: scale(0.97);
+        }
+        .game-btn.win-btn {
+            background: #F6F9F7;
+            border-color: #C5DCD0;
+            color: #3D6B57;
+        }
+        .game-btn.lose-btn {
+            background: #FBF7F7;
+            border-color: #E5CCCC;
+            color: #8B5555;
+        }
+
+        /* ── Ring + Calendar ── */
+        .top-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .ring-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        .ring-svg {
+            width: 80px;
+            height: 80px;
+            transform: rotate(-90deg);
+        }
+        .ring-bg {
+            fill: none;
+            stroke: #EDECE9;
+            stroke-width: 6;
+        }
+        .ring-fill {
+            fill: none;
+            stroke: var(--gold);
+            stroke-width: 6;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.6s ease;
+        }
+        .ring-fill.complete {
+            stroke: var(--win);
+        }
+        .ring-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: -0.5px;
+        }
+        .calendar-strip {
+            flex: 1;
+            display: flex;
+            gap: 4px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            min-width: 0;
+        }
+        .cal-day {
+            min-width: 34px;
+            height: 42px;
+            border-radius: 6px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+        .cal-day.today {
+            border-color: var(--text-light);
+            border-width: 1.5px;
+        }
+        .cal-day.done {
+            background: #F3F0E9;
+            border-color: var(--gold);
+        }
+        .cal-day.done::after {
+            content: '◆';
+            font-size: 9px;
+            color: var(--gold);
+            line-height: 1;
+        }
+        .cal-day.missed {
+            background: #F9F3F3;
+            border-color: #E8D5D5;
+        }
+        .cal-day.missed::after {
+            content: '◇';
+            font-size: 9px;
+            color: var(--lose);
+            line-height: 1;
+        }
+        .cal-day .cal-dow {
+            font-size: 7px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .cal-day .cal-num {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        /* ── Chain Card ── */
+        .chain-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        .chain-header {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chain-header h3 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        .chain-status {
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+        .chain-status.incomplete {
+            color: #B06A6A;
+        }
+        .chain-status.complete {
+            color: var(--win);
+        }
+        .task-list {
+            padding: 6px 0;
+        }
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-bottom: 1px solid #F8F7F5;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .task-item:active {
+            background: #FAFAF8;
+        }
+        .task-item:last-child {
+            border-bottom: none;
+        }
+        .task-check {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 11px;
+            color: transparent;
+        }
+        .task-check.done {
+            background: var(--win);
+            border-color: var(--win);
+            color: #FFF;
+        }
+        .task-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .task-name {
+            font-size: 13px;
+            color: var(--text);
+            letter-spacing: -0.1px;
+        }
+        .task-item.done-item .task-name {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+        .task-time {
+            font-size: 10px;
+            color: var(--text-light);
+            letter-spacing: 0.2px;
+        }
+        .task-delete {
+            font-size: 16px;
+            color: var(--text-muted);
+            padding: 4px 6px;
+            cursor: pointer;
+        }
+        .add-task-row {
+            display: flex;
+            gap: 6px;
+            padding: 10px 14px;
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+        .add-task-row input {
+            padding: 8px 10px;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            font-size: 12px;
+            background: #FAFAF8;
+            color: var(--text);
+            outline: none;
+            font-family: inherit;
+            min-width: 0;
+        }
+        .add-task-row input:focus {
+            border-color: var(--gold);
+        }
+        .add-task-row input.task-name-input {
+            flex: 2;
+            min-width: 90px;
+        }
+        .add-task-row input.time-input {
+            flex: 1;
+            min-width: 50px;
+            text-align: center;
+        }
+        .add-task-row button {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text);
+            font-size: 12px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .add-task-row button:active {
+            background: #F3F0E9;
+        }
+        .chain-actions {
+            display: flex;
+            gap: 6px;
+            padding: 6px 14px 10px;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .chain-actions button {
+            font-size: 10px;
+            color: var(--text-light);
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-family: inherit;
+            letter-spacing: 0.2px;
+        }
+        .chain-actions button:active {
+            background: #F3F0E9;
+            color: var(--text);
+        }
+
+        /* Stats */
+        .stats-row {
+            display: flex;
+            gap: 8px;
+        }
+        .stat-mini {
+            flex: 1;
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        .stat-mini .val {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: -0.3px;
+        }
+        .stat-mini .lbl {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--text-light);
+        }
+
+        /* ── MOTIVATION MODAL ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(55,53,47,0.7);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-card {
+            background: #FFFEFB;
+            border-radius: 16px;
+            padding: 28px 22px;
+            margin: 20px;
+            text-align: center;
+            max-width: 340px;
+            width: 100%;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+            transform: translateY(20px);
+            transition: transform 0.4s ease;
+        }
+        .modal-overlay.show .modal-card {
+            transform: translateY(0);
+        }
+        .modal-emoji {
+            font-size: 48px;
+            margin-bottom: 12px;
+            line-height: 1;
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #37352F;
+            letter-spacing: -0.3px;
+            margin-bottom: 8px;
+        }
+        .modal-quote {
+            font-size: 14px;
+            color: #6B6B65;
+            line-height: 1.6;
+            letter-spacing: -0.1px;
+            font-style: italic;
+            margin-bottom: 16px;
+        }
+        .modal-btn {
+            padding: 10px 28px;
+            border-radius: 20px;
+            border: 1px solid #C9B99A;
+            background: #F5F3EF;
+            color: #37352F;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+        .modal-btn:active {
+            background: #E8DDCC;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #37352F;
+            color: #FAFAF8;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            opacity: 0;
+            transition: all 0.35s ease;
+            z-index: 100;
+            pointer-events: none;
+            white-space: nowrap;
+            letter-spacing: -0.1px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 4px 0 12px;
+        }
+        .footer button {
+            font-size: 11px;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        ::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <div class="header">
+            <div class="title">the best version of myself</div>
+            <div class="subtitle">daily chain · complete all to win the day</div>
+        </div>
+
+        <!-- WIN / IMPULSE GAME -->
+        <div class="game-card">
+            <div class="game-score-row">
+                <div class="game-score win-score">
+                    <div class="g-label">◆ Wins</div>
+                    <div class="g-val" id="winScore">0</div>
+                </div>
+                <div class="game-score lose-score">
+                    <div class="g-label">◇ Impulses</div>
+                    <div class="g-val" id="impulseScore">0</div>
+                </div>
+            </div>
+            <div class="game-progress">
+                <div class="win-fill" id="winFill" style="width:50%;"></div>
+                <div class="lose-fill" id="loseFill" style="width:50%;"></div>
+            </div>
+            <div class="game-info">
+                <span id="gameRatio">0:0</span>
+                <span>Goal: 70%</span>
+            </div>
+            <div class="game-input-row">
+                <input type="text" id="gameInput" placeholder="What happened?" maxlength="50" inputmode="text" autocorrect="off">
+            </div>
+            <div class="game-btns">
+                <button class="game-btn win-btn" id="gameWinBtn">◆ I Won</button>
+                <button class="game-btn lose-btn" id="gameLoseBtn">◇ Impulse</button>
+            </div>
+        </div>
+
+        <!-- Ring + Calendar -->
+        <div class="top-row">
+            <div class="ring-container">
+                <svg class="ring-svg" viewBox="0 0 80 80">
+                    <circle class="ring-bg" cx="40" cy="40" r="34"/>
+                    <circle class="ring-fill" id="ringFill" cx="40" cy="40" r="34"
+                    stroke-dasharray="213.6" stroke-dashoffset="213.6"/>
+                </svg>
+                <div class="ring-text" id="ringText">0%</div>
+            </div>
+            <div class="calendar-strip" id="calendarStrip"></div>
+        </div>
+
+        <!-- Chain -->
+        <div class="chain-card">
+            <div class="chain-header">
+                <h3>Today's Chain</h3>
+                <span class="chain-status incomplete" id="chainStatus">incomplete</span>
+            </div>
+            <div class="task-list" id="taskList"></div>
+            <div class="add-task-row">
+                <input type="text" class="task-name-input" id="newTaskName" placeholder="task name" maxlength="50" inputmode="text" autocorrect="off">
+                <input type="text" class="time-input" id="newTaskStart" placeholder="start" maxlength="10" inputmode="text" autocorrect="off">
+                <input type="text" class="time-input" id="newTaskEnd" placeholder="end" maxlength="10" inputmode="text" autocorrect="off">
+                <button id="addTaskBtn">Add</button>
+            </div>
+            <div class="chain-actions">
+                <button id="duplicateTomorrowBtn">↻ Duplicate to tomorrow</button>
+                <button id="duplicateWeekBtn">↻ Duplicate next 7 days</button>
+                <button id="resetTodayBtn">Reset today</button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-mini">
+                <div class="val" id="streakDays">0</div>
+                <div class="lbl">Day Streak</div>
+            </div>
+            <div class="stat-mini">
+                <div class="val" id="totalChains">0</div>
+                <div class="lbl">Chains Done</div>
+            </div>
+            <div class="stat-mini">
+                <div class="val" id="totalMissed">0</div>
+                <div class="lbl">Missed</div>
+            </div>
+        </div>
+
+        <!-- Reset -->
+        <div class="footer">
+            <button id="resetAllBtn">Reset All Progress</button>
+        </div>
+
+        <!-- Toast -->
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <!-- MOTIVATION MODAL -->
+    <div class="modal-overlay" id="motivationModal">
+        <div class="modal-card">
+            <div class="modal-emoji" id="modalEmoji">✨</div>
+            <div class="modal-title">Day Complete!</div>
+            <div class="modal-quote" id="modalQuote"></div>
+            <button class="modal-btn" id="modalCloseBtn">Thank you ✦</button>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'better_me_full_v7';
+
+        function loadData() {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) {
+                try { return JSON.parse(raw); } catch (e) {}
+            }
+            return {
+                wins: 0,
+                impulses: 0,
+                gameHistory: [],
+                gameStreakDays: {},
+                tasks: [
+                    { id: 1, name: 'Make the bed', start: '07:00', end: '07:05' },
+                    { id: 2, name: 'Drink water (500ml)', start: '07:05', end: '07:10' },
+                    { id: 3, name: 'Stretch / yoga', start: '07:10', end: '07:30' },
+                    { id: 4, name: 'Read 10 pages', start: '20:00', end: '20:30' },
+                    { id: 5, name: 'No phone', start: '22:00', end: '06:00' },
+                ],
+                completedDays: {},
+                todayCompleted: {},
+                nextId: 6,
+                futureTasks: {}
+            };
+        }
+
+        function saveData(data) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        let appData = loadData();
+
+        const winScoreEl = document.getElementById('winScore');
+        const impulseScoreEl = document.getElementById('impulseScore');
+        const winFill = document.getElementById('winFill');
+        const loseFill = document.getElementById('loseFill');
+        const gameRatio = document.getElementById('gameRatio');
+        const gameInput = document.getElementById('gameInput');
+        const gameWinBtn = document.getElementById('gameWinBtn');
+        const gameLoseBtn = document.getElementById('gameLoseBtn');
+        const ringFill = document.getElementById('ringFill');
+        const ringText = document.getElementById('ringText');
+        const calendarStrip = document.getElementById('calendarStrip');
+        const chainStatus = document.getElementById('chainStatus');
+        const taskList = document.getElementById('taskList');
+        const newTaskName = document.getElementById('newTaskName');
+        const newTaskStart = document.getElementById('newTaskStart');
+        const newTaskEnd = document.getElementById('newTaskEnd');
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const duplicateTomorrowBtn = document.getElementById('duplicateTomorrowBtn');
+        const duplicateWeekBtn = document.getElementById('duplicateWeekBtn');
+        const resetTodayBtn = document.getElementById('resetTodayBtn');
+        const streakDaysEl = document.getElementById('streakDays');
+        const totalChainsEl = document.getElementById('totalChains');
+        const totalMissedEl = document.getElementById('totalMissed');
+        const resetAllBtn = document.getElementById('resetAllBtn');
+        const toast = document.getElementById('toast');
+        const motivationModal = document.getElementById('motivationModal');
+        const modalEmoji = document.getElementById('modalEmoji');
+        const modalQuote = document.getElementById('modalQuote');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+        const RING_CIRCUMFERENCE = 2 * Math.PI * 34;
+
+        const motivations = [
+            { emoji: '✨', quote: 'You didn\'t just finish tasks. You chose yourself over comfort. That is the definition of strength. Tomorrow, the person you are becoming will thank you.' },
+            { emoji: '🏔', quote: 'Every chain you complete is a brick in the fortress of your character. Small actions, repeated daily, create an unshakeable foundation. You are building something extraordinary.' },
+            { emoji: '🔥', quote: 'Discipline is not punishment. It is the ultimate act of self-love. By doing what you said you would do, you proved to yourself that you are reliable. That changes everything.' },
+            { emoji: '🌙', quote: 'The night is proud of you. While the world chased distractions, you stayed true. Rest deeply — you earned it. Tomorrow\'s challenges will meet a stronger you.' },
+            { emoji: '💎', quote: 'Most people never finish what they start. Today, you are not most people. You closed every loop. That rare quality will take you places others only dream of.' },
+            { emoji: '🌟', quote: 'You are the author of your days. Today you wrote a story of integrity. Keep writing chapters you\'re proud to reread. Your future self is already applauding.' },
+            { emoji: '🦋', quote: 'Transformation doesn\'t happen in one dramatic moment. It happens in small, consistent choices. Today, you made all the right ones. You are literally changing before your own eyes.' },
+            { emoji: '⚡', quote: 'Motivation is fleeting, but you just proved you don\'t need it. You have something far more powerful: systems and self-trust. That combination is unstoppable.' },
+            { emoji: '🌿', quote: 'Peace comes from knowing you did your best. Tonight, there are no "what ifs" or regrets — only the quiet satisfaction of a day fully lived. Breathe it in.' },
+            { emoji: '🏆', quote: 'Champions are not defined by one big victory. They are defined by showing up on ordinary days and doing the work. Today was an ordinary day — and you were extraordinary.' },
+            { emoji: '🕯', quote: 'In a world full of noise, you chose focus. In a world full of excuses, you chose action. That quiet power inside you? It just got louder. Never let anyone dim it — including yourself.' },
+            { emoji: '🌅', quote: 'The sun sets on a day you fully owned. No loose ends, no "I\'ll do it tomorrow." That feeling of completion is rare and precious. You created it with your own two hands.' },
+            { emoji: '🔑', quote: 'Every completed chain is a key. You are unlocking a version of yourself that doesn\'t negotiate with laziness, that doesn\'t beg for motivation. You just do. That person is free.' },
+            { emoji: '🎯', quote: 'You aimed at a full chain and hit the bullseye. Precision like that is not luck — it is the result of clarity and commitment. Bring that same energy tomorrow. The target is waiting.' },
+            { emoji: '🌊', quote: 'The tide of distraction rises every day. But today you built a dam strong enough to hold it back. Your focus is a superpower. Protect it. Nurture it. It will carry you far.' },
+            { emoji: '🦅', quote: 'From above, the path looks clear. You just climbed higher than yesterday. Every completed task is altitude gained. Soon you\'ll see horizons others can\'t even imagine.' },
+        ];
+
+        function getTodaysMotivation() {
+            const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+            return motivations[dayOfYear % motivations.length];
+        }
+
+        function showMotivationModal() {
+            const m = getTodaysMotivation();
+            modalEmoji.textContent = m.emoji;
+            modalQuote.textContent = m.quote;
+            motivationModal.classList.add('show');
+        }
+
+        function hideMotivationModal() {
+            motivationModal.classList.remove('show');
+        }
+
+        modalCloseBtn.addEventListener('click', hideMotivationModal);
+        motivationModal.addEventListener('click', (e) => {
+            if (e.target === motivationModal) hideMotivationModal();
+        });
+
+        function getTodayKey() {
+            const d = new Date();
+            return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        }
+
+        function getDateKey(date) {
+            return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+        }
+
+        function isAllTasksDoneToday() {
+            return appData.tasks.length > 0 && appData.tasks.every(t => appData.todayCompleted[t.id] === true);
+        }
+
+        function getCompletedCount() {
+            return appData.tasks.filter(t => appData.todayCompleted[t.id] === true).length;
+        }
+
+        function calculateChainStreak() {
+            const today = getTodayKey();
+            let streak = 0;
+            if (appData.completedDays[today] === true) {
+                streak = 1;
+                const checkDate = new Date();
+                while (true) {
+                    checkDate.setDate(checkDate.getDate() - 1);
+                    if (appData.completedDays[getDateKey(checkDate)] === true) streak++;
+                    else break;
+                }
+            } else {
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yKey = getDateKey(yesterday);
+                if (appData.completedDays[yKey] === true) {
+                    let tempStreak = 1;
+                    const checkDate = new Date(yesterday);
+                    while (true) {
+                        checkDate.setDate(checkDate.getDate() - 1);
+                        if (appData.completedDays[getDateKey(checkDate)] === true) tempStreak++;
+                        else break;
+                    }
+                    streak = tempStreak;
+                }
+            }
+            return streak;
+        }
+
+        function getTotalChainsDone() {
+            return Object.values(appData.completedDays).filter(v => v === true).length;
+        }
+
+        function getTotalMissed() {
+            return Object.values(appData.completedDays).filter(v => v === false).length;
+        }
+
+        let toastTimer;
+
+        function showToast(msg) {
+            clearTimeout(toastTimer);
+            toast.textContent = msg;
+            toast.className = 'toast';
+            requestAnimationFrame(() => toast.classList.add('show'));
+            toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        function renderGame() {
+            winScoreEl.textContent = appData.wins;
+            impulseScoreEl.textContent = appData.impulses;
+            const total = appData.wins + appData.impulses;
+            if (total > 0) {
+                const winPct = Math.round((appData.wins / total) * 100);
+                winFill.style.width = winPct + '%';
+                loseFill.style.width = (100 - winPct) + '%';
+                gameRatio.textContent = appData.wins + ':' + appData.impulses + ' (' + winPct + '%)';
+            } else {
+                winFill.style.width = '50%';
+                loseFill.style.width = '50%';
+                gameRatio.textContent = '0:0';
+            }
+        }
+
+        function recordGameAction(type) {
+            const text = gameInput.value.trim();
+            const reason = text || (type === 'win' ? 'Did what was needed' : 'Gave in to desire');
+            appData.gameHistory.push({ type, reason, timestamp: new Date().toISOString(), date: new Date().toDateString() });
+            if (type === 'win') {
+                appData.wins++;
+                appData.gameStreakDays[getTodayKey()] = true;
+                showToast('◆ Win! +1');
+            } else {
+                appData.impulses++;
+                appData.gameStreakDays[getTodayKey()] = false;
+                showToast('◇ Impulse... it\'s okay');
+            }
+            if (appData.gameHistory.length > 300) appData.gameHistory = appData.gameHistory.slice(-300);
+            gameInput.value = '';
+            renderAll();
+        }
+
+        function renderRing() {
+            const done = getCompletedCount();
+            const total = appData.tasks.length;
+            const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+            const offset = RING_CIRCUMFERENCE - (pct / 100) * RING_CIRCUMFERENCE;
+            ringFill.style.strokeDashoffset = offset;
+            ringFill.classList.toggle('complete', pct === 100 && total > 0);
+            ringText.textContent = total > 0 ? pct + '%' : '—';
+        }
+
+        function renderCalendar() {
+            const days = [];
+            const today = new Date();
+            for (let i = 13; i >= 0; i--) {
+                const d = new Date(today);
+                d.setDate(today.getDate() - i);
+                const key = getDateKey(d);
+                const dow = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()];
+                days.push({ key, num: d.getDate(), dow, isToday: key === getTodayKey(), status: appData.completedDays[key] });
+            }
+            calendarStrip.innerHTML = days.map(d => {
+                let cls = 'cal-day';
+                if (d.isToday) cls += ' today';
+                if (d.status === true) cls += ' done';
+                if (d.status === false) cls += ' missed';
+                return '<div class="' + cls + '"><span class="cal-dow">' + d.dow + '</span><span class="cal-num">' + d.num + '</span></div>';
+            }).join('');
+            calendarStrip.scrollLeft = calendarStrip.scrollWidth;
+        }
+
+        function renderTasks() {
+            taskList.innerHTML = '';
+            appData.tasks.forEach(t => {
+                const isDone = appData.todayCompleted[t.id] === true;
+                const div = document.createElement('div');
+                div.className = 'task-item' + (isDone ? ' done-item' : '');
+                let timeStr = '';
+                if (t.start && t.end) timeStr = '⏱ ' + t.start + ' – ' + t.end;
+                else if (t.start) timeStr = '⏱ ' + t.start;
+                else if (t.time) timeStr = '⏱ ' + t.time;
+                div.innerHTML =
+                    '<div class="task-check' + (isDone ? ' done' : '') + '">' + (isDone ? '✓' : '') + '</div>' +
+                    '<div class="task-info"><div class="task-name">' + escapeHtml(t.name) + '</div>' +
+                    (timeStr ? '<div class="task-time">' + timeStr + '</div>' : '') + '</div>' +
+                    '<div class="task-delete" data-id="' + t.id + '">×</div>';
+                div.querySelector('.task-check').addEventListener('click', (e) => { e.stopPropagation();
+                    toggleTask(t.id); });
+                div.addEventListener('click', () => toggleTask(t.id));
+                div.querySelector('.task-delete').addEventListener('click', (e) => { e.stopPropagation();
+                    deleteTask(t.id); });
+                taskList.appendChild(div);
+            });
+        }
+
+        function escapeHtml(str) {
+            const d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML;
+        }
+
+        function toggleTask(id) {
+            appData.todayCompleted[id] = !appData.todayCompleted[id];
+            const allDone = isAllTasksDoneToday();
+            const todayKey = getTodayKey();
+            const wasJustCompleted = allDone && appData.completedDays[todayKey] !== true;
+            if (allDone) {
+                appData.completedDays[todayKey] = true;
+                if (wasJustCompleted) setTimeout(() => showMotivationModal(), 400);
+                showToast('◆ Chain complete! Day won! 🏆');
+            } else {
+                if (appData.completedDays[todayKey] === true) appData.completedDays[todayKey] = false;
+            }
+            renderAll();
+        }
+
+        function deleteTask(id) {
+            if (confirm('Delete this task?')) {
+                appData.tasks = appData.tasks.filter(t => t.id !== id);
+                delete appData.todayCompleted[id];
+                const allDone = isAllTasksDoneToday();
+                const todayKey = getTodayKey();
+                if (!allDone && appData.completedDays[todayKey] === true) appData.completedDays[todayKey] = false;
+                if (allDone && appData.completedDays[todayKey] !== true && appData.tasks.length > 0) appData.completedDays[todayKey] = true;
+                renderAll();
+            }
+        }
+
+        function addTask() {
+            const name = newTaskName.value.trim();
+            if (!name) return;
+            const start = newTaskStart.value.trim();
+            const end = newTaskEnd.value.trim();
+            appData.tasks.push({ id: appData.nextId, name, start: start || '', end: end || '' });
+            appData.nextId++;
+            newTaskName.value = '';
+            newTaskStart.value = '';
+            newTaskEnd.value = '';
+            renderAll();
+        }
+
+        function resetToday() {
+            if (confirm('Reset all tasks for today?')) {
+                appData.todayCompleted = {};
+                appData.completedDays[getTodayKey()] = false;
+                renderAll();
+                showToast('Today reset');
+            }
+        }
+
+        function duplicateToTomorrow() {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const key = getDateKey(tomorrow);
+            if (!appData.futureTasks[key]) appData.futureTasks[key] = JSON.parse(JSON.stringify(appData.tasks));
+            showToast('✓ Duplicated to tomorrow');
+            renderAll();
+        }
+
+        function duplicateToNextWeek() {
+            for (let i = 1; i <= 7; i++) {
+                const futureDate = new Date();
+                futureDate.setDate(futureDate.getDate() + i);
+                const key = getDateKey(futureDate);
+                if (!appData.futureTasks[key]) appData.futureTasks[key] = JSON.parse(JSON.stringify(appData.tasks));
+            }
+            showToast('✓ Duplicated next 7 days');
+            renderAll();
+        }
+
+        function renderAll() {
+            renderGame();
+            const allDone = isAllTasksDoneToday();
+            const totalTasks = appData.tasks.length;
+            chainStatus.textContent = totalTasks === 0 ? 'no tasks' : allDone ? 'complete ◆' : 'incomplete';
+            chainStatus.className = 'chain-status ' + (allDone && totalTasks > 0 ? 'complete' : 'incomplete');
+            streakDaysEl.textContent = calculateChainStreak();
+            totalChainsEl.textContent = getTotalChainsDone();
+            totalMissedEl.textContent = getTotalMissed();
+            renderRing();
+            renderCalendar();
+            renderTasks();
+            saveData(appData);
+        }
+
+        const todayKey = getTodayKey();
+        const lastActiveDate = localStorage.getItem('better_me_last_date');
+        if (lastActiveDate !== todayKey) {
+            appData.todayCompleted = {};
+            if (appData.futureTasks && appData.futureTasks[todayKey]) {
+                appData.tasks = appData.futureTasks[todayKey];
+                const maxId = Math.max(...appData.tasks.map(t => t.id), appData.nextId - 1);
+                appData.tasks.forEach(t => { if (t.id > appData.nextId) t.id = ++maxId; });
+                appData.nextId = maxId + 1;
+                delete appData.futureTasks[todayKey];
+            }
+            localStorage.setItem('better_me_last_date', todayKey);
+        }
+
+        gameWinBtn.addEventListener('click', () => recordGameAction('win'));
+        gameLoseBtn.addEventListener('click', () => recordGameAction('lose'));
+        addTaskBtn.addEventListener('click', addTask);
+        newTaskName.addEventListener('keydown', (e) => { if (e.key === 'Enter') addTask(); });
+        newTaskStart.addEventListener('keydown', (e) => { if (e.key === 'Enter') addTask(); });
+        newTaskEnd.addEventListener('keydown', (e) => { if (e.key === 'Enter') addTask(); });
+        resetTodayBtn.addEventListener('click', resetToday);
+        duplicateTomorrowBtn.addEventListener('click', duplicateToTomorrow);
+        duplicateWeekBtn.addEventListener('click', duplicateToNextWeek);
+        resetAllBtn.addEventListener('click', () => {
+            if (confirm('Reset ALL progress?')) {
+                appData = {
+                    wins: 0,
+                    impulses: 0,
+                    gameHistory: [],
+                    gameStreakDays: {},
+                    tasks: [
+                        { id: 1, name: 'Make the bed', start: '07:00', end: '07:05' },
+                        { id: 2, name: 'Drink water (500ml)', start: '07:05', end: '07:10' },
+                        { id: 3, name: 'Stretch / yoga', start: '07:10', end: '07:30' },
+                        { id: 4, name: 'Read 10 pages', start: '20:00', end: '20:30' },
+                        { id: 5, name: 'No phone', start: '22:00', end: '06:00' },
+                    ],
+                    completedDays: {},
+                    todayCompleted: {},
+                    nextId: 6,
+                    futureTasks: {}
+                };
+                localStorage.removeItem('better_me_last_date');
+                renderAll();
+                showToast('All progress reset');
+            }
+        });
+
+        renderAll();
+    </script>
+</body>
+</html>
